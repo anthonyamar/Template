@@ -14,6 +14,7 @@ gem 'sass-rails', '~> 5.0'
 gem 'sidekiq', '~> 5.2.2'
 gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
+gem 'rest-client'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
@@ -27,6 +28,8 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
+  gem "pry"
+  gem 'rb-readline'
 end
 
 group :test do
