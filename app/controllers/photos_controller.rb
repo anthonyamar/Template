@@ -14,11 +14,34 @@ class PhotosController < ApplicationController
       end
     else
       respond_to do |format|
-        puts "+=======================+"
-        puts "failed"
-        puts "+=======================+"
         format.json { head :ok }
       end
+    end
+  end
+  
+  def swipe_right
+    client = TinderApi.new
+    response = client.like(params[:tinder_id])
+    
+    if response.code == 200
+      redirect_to photos_path
+      flash[:success] = "Swipe right :-)"
+    else
+      redirect_to photos_path
+      flash[:danger] = response
+    end
+  end
+  
+  def swipe_left
+    client = TinderApi.new
+    response = client.dislike(params[:tinder_id])
+    
+    if response.code == 200
+      redirect_to photos_path
+      flash[:success] = "Swipe left :-("
+    else
+      redirect_to photos_path
+      flash[:danger] = response
     end
   end
 
