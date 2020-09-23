@@ -5,6 +5,12 @@
   <p>Looks like everything is running smoothly ⛵️</p>
 
   <% if user_signed_in? %>
+    <div class="mb-4">
+      <h5>Learning progression :</h5>
+      <span><%= @passed_photos_count %> passed photos</span><br>
+      <span><%= @liked_photos_count %> liked photos</span><br>
+      <span><%= @passed_photos_count + @liked_photos_count %> total photos</span><br>
+    </div>
     <%= link_to 'Log out', destroy_user_session_path, method: :delete, class: "btn btn-danger btn-lg" %>
   <% else %>
     <%= link_to 'Log in', new_user_session_path, class: "btn btn-success btn-lg" %>

@@ -1,26 +1,30 @@
 <div class="container">
   <div class="heading mb-5">
-    <h1><%= @tinder_profile.user.name %></h1><br>
+    <h1>
+      <%= @tinder_profile.user.name %> -
+      <%= DateTime.now.year - DateTime.parse(@tinder_profile.user.birth_date).year %> ans
+    </h1><br>
     <p><%= @tinder_profile.user.bio %></p>
     <%= link_to "<- Swipe left", '#', class: "btn btn-danger" %>
     <%= link_to "Swipe right ->", '#', class: "btn btn-success" %>
   </div>
   <div class="row">
-    <% @tinder_profile.user.photos.each do |photo| %>
-      <div class="card mr-3 mb-3" style="width: 18rem;">
+    <% @tinder_profile.user.photos.each_with_index do |photo, idx| %>
+      <div id="card-photo-<%= idx %>" class="card mr-3 mb-3" style="width: 18rem;">
         <img class="card-img-top" src="<%= photo.url %>">
         <div class="card-body">
           <div class="row">
             <div class="col-sm-6">
-              <a href="#" class="btn btn-warning btn-block mt-2" onclick="pass(<%= photo.url %>);">
+              <span class="btn btn-warning btn-block mt-2" onclick="pass('<%= photo.url %>', '<%= idx %>');">
                 Pass
-              </a>
+              </span>
             </div>
             <div class="col-sm-6">
-              <a href="#" class="btn btn-info btn-block mt-2" onclick="like(<%= photo.url %>);">
+              <span class="btn btn-info btn-block mt-2" onclick="like('<%= photo.url %>', '<%= idx %>');">
                 Like
-              </a>
+              </span>
             </div>
+            <p id="alert-photo-<%= idx %>" class="text-muted"></p>
           </div>
         </div>
       </div>
@@ -31,12 +35,53 @@
 
 <script>
 
-  var like = function(url) {
-
+  var like = function(url, idx) {
+    var params = {
+      photo: {
+        url: url,
+        label: 0,
+        user_id: "<%= current_user.id %>"
+      }
+    }
+    
+    fetchPhotoCreate(params, idx)
   }
 
-  var pass = function(url) {
+  var pass = function(url, idx) {
+    var params = {
+      photo: {
+        url: url,
+        label: 1,
+        user_id: "<%= current_user.id %>"
+      }
+    }
+    
+    fetchPhotoCreate(params, idx);
+  }
 
+  var fetchPhotoCreate = function(params, idx) {
+    var alert = document.getElementById("alert-photo-" + idx);
+    var card = document.getElementById("card-photo-" + idx);
+    
+    fetch('/photos', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-Transaction': 'POST',
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+      },
+      body: JSON.stringify(params)
+    }).then(function(response){
+      alert.innerText = "Photo enregistrée";
+      card.classList.add("border-success")
+      return
+    }).catch(function(error){
+      alert.innerText = error;
+      card.classList.add("border-danger")
+      return
+    });
+    return
   }
 
 </script>
