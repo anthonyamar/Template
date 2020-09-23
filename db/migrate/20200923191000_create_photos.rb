@@ -4,6 +4,8 @@ class CreatePhotos < ActiveRecord::Migration[5.2]
       t.string :url, null: false
       t.integer :label, null: false, default: 0
       t.timestamps
+      
+      t.references :user
     end
   end
 end
